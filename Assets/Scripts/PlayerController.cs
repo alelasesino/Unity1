@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class PlayerController : MonoBehaviour
     public Text countText;
     public Text winText;
     public Button btRestart;
-
+    
     private Rigidbody rb;
     private int count;
     private bool isWin;
@@ -65,6 +66,7 @@ public class PlayerController : MonoBehaviour
         if(isWin) {
         
             winText.text = "¡Enhorabuena has ganado!";
+            rb.constraints = RigidbodyConstraints.FreezeAll;
             btRestart.gameObject.SetActive(true);
         }
     
@@ -72,12 +74,14 @@ public class PlayerController : MonoBehaviour
 
     public void onRestartClick() {
 
-        winText.text = "";
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
+        /*winText.text = "";
         transform.position = new Vector3(0.0f,0,0);
         isWin = false;
         count = 0;
         setCountText();
-        btRestart.gameObject.SetActive(false);
+        btRestart.gameObject.SetActive(false);*/
 
     }
     
