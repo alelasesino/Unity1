@@ -8,13 +8,12 @@ public class PlayerController : MonoBehaviour
 {
 
     public float speed;
-    public Text countText;
-    public Text winText;
+    public Text countText, winText;
     public Button btRestart;
-    
+
+    private const int MAX_POINTS = 60;    
     private Rigidbody rb;
     private int count;
-    private bool isWin;
 
     void Start() {
     
@@ -22,52 +21,52 @@ public class PlayerController : MonoBehaviour
         count = 0;
         setCountText();
         winText.text = "";
-        isWin = false;
         btRestart.gameObject.SetActive(false);
 
     }
 
     void FixedUpdate() {
-    
-        if(!isWin) {
+        
+        float moveHorizontal = Input.GetAxis("Horizontal");
+        float moveVertical = Input.GetAxis("Vertical");
 
-            float moveHorizontal = Input.GetAxis("Horizontal");
-            float moveVertical = Input.GetAxis("Vertical");
-
-            Vector3 movement = new Vector3(moveHorizontal,0.0f,moveVertical);
-            rb.AddForce(movement * speed);
-
-        }
+        Vector3 movement = new Vector3(moveHorizontal,0.0f,moveVertical);
+        rb.AddForce(movement * speed); 
 
     }
 
     void OnTriggerEnter(Collider other) {
-    
-        if(other.gameObject.CompareTag("Pick Up")) {
-        
+
+        if(other.gameObject.CompareTag("Pick Up Plus") || other.gameObject.CompareTag("Pick Up")) {
+
             other.gameObject.SetActive(false);
-            count++;
+
+            if(other.gameObject.CompareTag("Pick Up Plus"))
+                count += 10;
+            else
+                count += 5;
+
             setCountText();
             checkWin();
+
         }
 
     }
     
     void setCountText() {
 
-        countText.text = "Puntos: " + count.ToString() + "/12";
+        countText.text = "Puntos: " + count.ToString() + "/" + MAX_POINTS;
 
     }
 
     void checkWin() {
-    
-        isWin = count >=12;
 
-        if(isWin) {
+        if(count >= MAX_POINTS) {
         
             winText.text = "¡Enhorabuena has ganado!";
             rb.constraints = RigidbodyConstraints.FreezeAll;
             btRestart.gameObject.SetActive(true);
+
         }
     
     }
@@ -76,12 +75,24 @@ public class PlayerController : MonoBehaviour
 
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 
-        /*winText.text = "";
-        transform.position = new Vector3(0.0f,0,0);
-        isWin = false;
-        count = 0;
-        setCountText();
-        btRestart.gameObject.SetActive(false);*/
+    }
+
+    private void OnCollisionEnter(Collision collision) {
+
+
+        if(!collision.gameObject.CompareTag("Wall")) {
+            
+            count--;
+            setCountText();
+
+        }
+
+        if(collision.gameObject.CompareTag("CapsuleObstacule")) {
+
+            Vector3 movement = -rb.velocity.normalized * 30;
+            rb.AddForce(movement,ForceMode.VelocityChange);
+
+        }
 
     }
     
