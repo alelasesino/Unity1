@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour
         setCountText();
         winText.text = "";
         btRestart.gameObject.SetActive(false);
+        Time.timeScale = 1;
 
     }
 
@@ -31,7 +32,17 @@ public class PlayerController : MonoBehaviour
         float moveVertical = Input.GetAxis("Vertical");
 
         Vector3 movement = new Vector3(moveHorizontal,0.0f,moveVertical);
-        rb.AddForce(movement * speed); 
+        rb.AddForce(movement * speed);
+
+
+        if(Input.GetKeyDown("space")) {
+            Vector3 jump = new Vector3(0.0f,400.0f,0.0f);
+            rb.AddForce(jump);
+        }
+
+        if(rb.transform.position.y < -10){
+            rb.transform.position = new Vector3(0f, 0f, 0f);
+        }
 
     }
 
@@ -64,7 +75,8 @@ public class PlayerController : MonoBehaviour
         if(count >= MAX_POINTS) {
         
             winText.text = "¡Enhorabuena has ganado!";
-            rb.constraints = RigidbodyConstraints.FreezeAll;
+            Time.timeScale = 0;
+            //rb.constraints = RigidbodyConstraints.FreezeAll;
             btRestart.gameObject.SetActive(true);
 
         }
