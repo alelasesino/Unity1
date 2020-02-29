@@ -8,6 +8,7 @@ TagManager:
   - CapsuleObstacule
   - Wall
   - Pick Up Plus
+  - Ground
   layers:
   - Default
   - TransparentFX
